@@ -13,7 +13,7 @@ class Helper:
         return int(converted)
 
     def time_conversion(self, api_time):
-        return time.strftime("%I:%M %p", time.localtime(int(api_time)))
+        return time.strftime("%I:%M /%p", time.localtime(int(api_time)))
 
 
 key = "22330685c3be7c2bd44f391522a4f8b0"
