@@ -1,4 +1,5 @@
 from urllib.request import urlopen
+import urllib.parse
 import json
 import time
 
@@ -13,17 +14,20 @@ class Helper:
         return int(converted)
 
     def time_conversion(self, api_time):
-        return time.strftime("%I:%M /%p", time.localtime(int(api_time)))
+        return time.strftime("%I:%M %p", time.localtime(int(api_time)))
+
 
 
 key = "22330685c3be7c2bd44f391522a4f8b0"
-cityName = "Simi%20Valley"
+cityName = "Simi Valley"
+
+nameEncoded = urllib.parse.quote(cityName)
+
+url = f"http://api.openweathermap.org/data/2.5/weather?q={nameEncoded}&appid={key}"
 
 util = Helper()
 
-with urlopen(
-    f"http://api.openweathermap.org/data/2.5/weather?q={cityName}&appid={key}"
-) as response:
+with urlopen(url) as response:
     source = response.read()
 
 data = json.loads(source)
@@ -36,9 +40,3 @@ sunset = util.time_conversion(int(data["sys"]["sunset"]))
 
 lowTemp = util.temp_conversion(data["main"]["temp_min"])
 highTemp = util.temp_conversion(data["main"]["temp_max"])
-
-print(f"Sunrise will be {sunrise}")
-print(f"Sunset will be {sunset}")
-print(f"The low will be {lowTemp} degrees")
-print(f"The high will be {highTemp} degrees")
-print(f"The current temperature is {currentTemp} degrees")
