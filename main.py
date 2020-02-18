@@ -5,7 +5,6 @@ import os
 import json
 import time
 
-# ----------Dictionary is used to hold the values retrieved from the API
 weather_Dict = {
     "currentTemp": "",
     "sunrise": "",
@@ -15,18 +14,15 @@ weather_Dict = {
 }
 
 
-# --------converts the kelvin temperature returned from the api to farenheit
-def temp_conversion(temperature):
+def kelvin_to_farenheit_conversion(temperature):
     converted = (temperature - 273.15) * 9 / 5 + 32
     return int(converted)
 
 
-# --------converts the returned time to local time
-def time_conversion(api_time):
+def unix_to_local_time_conversion(api_time):
     return time.strftime("%I:%M %p", time.localtime(int(api_time)))
 
 
-# --------Makes the API call and retrieves the data
 def get_weather(city_name):
     key = os.environ.get("OPENWEATHER_API")
     cityName = city_name
@@ -41,13 +37,11 @@ def get_weather(city_name):
 
     data = json.loads(source)
 
-    weather_Dict["currentTemp"] = temp_conversion(data["main"]["temp"])
-    weather_Dict["sunrise"] = time_conversion(int(data["sys"]["sunrise"]))
-    weather_Dict["sunset"] = time_conversion(int(data["sys"]["sunset"]))
-    weather_Dict["lowTemp"] = temp_conversion(data["main"]["temp_min"])
-    weather_Dict["highTemp"] = temp_conversion(data["main"]["temp_max"])
-
-    # ------Can be used to check the json data
+    weather_Dict["currentTemp"] = kelvin_to_farenheit_conversion(data["main"]["temp"])
+    weather_Dict["sunrise"] = unix_to_local_time_conversion(int(data["sys"]["sunrise"]))
+    weather_Dict["sunset"] = unix_to_local_time_conversion(int(data["sys"]["sunset"]))
+    weather_Dict["lowTemp"] = kelvin_to_farenheit_conversion(data["main"]["temp_min"])
+    weather_Dict["highTemp"] = kelvin_to_farenheit_conversion(data["main"]["temp_max"])
 
     # print(json.dumps(data, indent=2))
     return weather_Dict
@@ -58,8 +52,6 @@ root = tk.Tk()
 
 root.title("Weather")
 root.geometry("500x200")
-
-# -------Functions------------
 
 
 def populate_weather():
@@ -98,15 +90,12 @@ def populate_weather():
     currentTemp_label.grid(row=5, column=0, columnspan=6, sticky=tk.W)
 
 
-# -------------City label and input---------------
-
 city_text = tk.StringVar()
 city_label = tk.Label(root, text="City Name", font=("bold", 14), padx=10)
 city_label.grid(row=0, column=0)
 city_entry = tk.Entry(root, textvariable=city_text)
 city_entry.grid(row=0, column=1)
 
-# -------------Weather Button---------------
 
 weather_btn = tk.Button(root, text="Get Weather", width=12, command=populate_weather)
 weather_btn.grid(row=0, column=2)
