@@ -15,18 +15,15 @@ weather_Dict = {
 }
 
 
-class Helper:
-    def __init__(self):
-        pass
+# --------converts the kelvin temperature returned from the api to farenheit
+def temp_conversion(temperature):
+    converted = (temperature - 273.15) * 9 / 5 + 32
+    return int(converted)
 
-    # --------converts the kelvin temperature returned from the api to farenheit
-    def temp_conversion(self, temperature):
-        converted = (temperature - 273.15) * 9 / 5 + 32
-        return int(converted)
 
-    # --------converts the returned time to local time
-    def time_conversion(self, api_time):
-        return time.strftime("%I:%M %p", time.localtime(int(api_time)))
+# --------converts the returned time to local time
+def time_conversion(api_time):
+    return time.strftime("%I:%M %p", time.localtime(int(api_time)))
 
 
 # --------Makes the API call and retrieves the data
@@ -39,18 +36,16 @@ def get_weather(city_name):
 
     url = f"http://api.openweathermap.org/data/2.5/weather?q={nameEncoded}&appid={key}"
 
-    util = Helper()
-
     with urlopen(url) as response:
         source = response.read()
 
     data = json.loads(source)
 
-    weather_Dict["currentTemp"] = util.temp_conversion(data["main"]["temp"])
-    weather_Dict["sunrise"] = util.time_conversion(int(data["sys"]["sunrise"]))
-    weather_Dict["sunset"] = util.time_conversion(int(data["sys"]["sunset"]))
-    weather_Dict["lowTemp"] = util.temp_conversion(data["main"]["temp_min"])
-    weather_Dict["highTemp"] = util.temp_conversion(data["main"]["temp_max"])
+    weather_Dict["currentTemp"] = temp_conversion(data["main"]["temp"])
+    weather_Dict["sunrise"] = time_conversion(int(data["sys"]["sunrise"]))
+    weather_Dict["sunset"] = time_conversion(int(data["sys"]["sunset"]))
+    weather_Dict["lowTemp"] = temp_conversion(data["main"]["temp_min"])
+    weather_Dict["highTemp"] = temp_conversion(data["main"]["temp_max"])
 
     # ------Can be used to check the json data
 
