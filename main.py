@@ -1,6 +1,7 @@
 from urllib.request import urlopen
 import urllib.parse
 import tkinter as tk
+import os
 import json
 import time
 
@@ -30,7 +31,7 @@ class Helper:
 
 # --------Makes the API call and retrieves the data
 def get_weather(city_name):
-    key = "22330685c3be7c2bd44f391522a4f8b0"
+    key = os.environ.get("OPENWEATHER_API")
     cityName = city_name
 
     # --------Encodes the city name to account for any white space
